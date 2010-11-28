@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<title>jQuery.confirmForm test</title>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.js"></script>
+  <link rel="stylesheet" href="http://github.com/jquery/qunit/raw/master/qunit/qunit.css" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://github.com/jquery/qunit/raw/master/qunit/qunit.js"></script>
+  <script type="text/javascript" src="http://github.com/philikon/MockHttpRequest/raw/master/lib/mock.js"></script>
+  <script type="text/javascript" src="http://dev.iceburg.net/jquery/jqModal/jqModal.js"></script>
+  <script src="../src/confirmform.js"></script>
+  <script>
+	$(document).ready(function(){
+
+		module("Confirm Form Plugin Test", {
+			setup: function() {
+				// Mock form submit.
+			    var self = this;
+			    this.server = new MockHttpServer();
+			    this.server.handle = this.handle;
+			    this.server.start();
+			    $("#qunit-fixture").find(":submit").click(function(){return false;});
+			},
+			teardown: function() {
+	            this.server.stop();
+	            $("body > #confirmForm").empty().remove();
+			},
+			handle: function(request) {
+				request.receive(200, "<html></html>");
+			}
+		});
+
+		test("Should append hidden field into form if submit button click.", function() {
+			$("#inputForm").confirmForm("#confirmForm", {});
+			equal(0, $("#submitButtonValue").length);
+			$("#submit_ok").click();
+			$("#inputForm").submit();
+			equal(1, $("#submitButtonValue").length);
+			equal('', $("#submitButtonValue").attr("name"));
+			equal('ok', $("#submitButtonValue").attr("value"));
+		});
+
+		test("Should append hidden field into form if submit button with name click.", function() {
+			$("#inputForm").confirmForm("#confirmForm", {});
+			equal(0, $("#submitButtonValue").length);
+			$("#continue").click();
+			$("#inputForm").submit();
+			equal(1, $("#submitButtonValue").length);
+			equal('_continue', $("#submitButtonValue").attr("name"));
+			equal('ok and continue', $("#submitButtonValue").attr("value"));
+		});
+
+		test("Show default confirmation modal dialog.", function() {
+			$("#inputForm").confirmForm("#confirmForm", {});
+			$("#submit_ok").click();
+			$("#inputForm").submit();
+			$("#inputForm").confirmShow();
+			ok($("#confirmForm").is(".jqmConfirm"));
+			equal('Are you sure?', $(".jqmConfirmTitle > h1").html(), 'Default title is "Are you sure?"');
+			equal('ID:', $(".jqmConfirmContent table tr:eq(0) th").html());
+			equal('123456789', $(".jqmConfirmContent table tr:eq(0) td").html());
+			equal(5, $(".jqmConfirmContent table tr").length);
+			equal('Yes', $("#confirmFormYes").attr('value'), 'Default yes button is "Yes"');
+			equal('No', $("#confirmFormNo").attr('value'), 'Default no button is "No"');
+		});
+
+		test("Show custom confirmation modal dialog.", function() {
+			$("#inputForm").confirmForm("#confirmForm", {
+				'title':'Are you sure following values:',
+				'yes':'Ok',
+				'no':'Cancel',
+				'formatValue':{
+					'sex':function(field) {
+						return {1:"Male", 2:"Female"}[$(field).val()];
+					},
+					'lang':function(field) {
+						return {'jp':"Japanese", 'en':"English"}[$(field).val()];
+					},
+					'news':function(field) {
+						return {1:"Sports", 2:"Music", 3:"Computer"}[$(field).val()];
+					}
+				},
+				'findLabel': function(field) {
+					switch(field.name) {
+					case 'sex':
+						return 'Sex';
+					case 'news':
+						return 'Receive News Mail';
+					default :
+						str = $(field).prev().html();
+						return str.substring(0, str.length-1);
+					}
+				},
+				'separator' : ' / '
+			});
+			$("#submit_ok").click();
+			$("#inputForm").submit();
+			$("#inputForm").confirmShow();
+			ok($("#confirmForm").is(".jqmConfirm"));
+			equal('Are you sure following values:', $(".jqmConfirmTitle > h1").html(), 'Title is custamizable');
+			equal(5, $(".jqmConfirmContent table tr").length);
+			equal('ID', $(".jqmConfirmContent table tr:eq(0) th").html());
+			equal('123456789', $(".jqmConfirmContent table tr:eq(0) td").html());
+			equal('Name', $(".jqmConfirmContent table tr:eq(1) th").html());
+			equal('my name', $(".jqmConfirmContent table tr:eq(1) td").html());
+			equal('Sex', $(".jqmConfirmContent table tr:eq(2) th").html());
+			equal('Male', $(".jqmConfirmContent table tr:eq(2) td").html());
+			equal('Language', $(".jqmConfirmContent table tr:eq(3) th").html());
+			equal('Japanese', $(".jqmConfirmContent table tr:eq(3) td").html());
+			equal('Receive News Mail', $(".jqmConfirmContent table tr:eq(4) th").html());
+			equal('Sports / Music', $(".jqmConfirmContent table tr:eq(4) td").html());
+			equal('Ok', $("#confirmFormYes").attr('value'), 'Customaizable yes button');
+			equal('Cancel', $("#confirmFormNo").attr('value'), 'Customaizable no button');
+		});
+
+	  });
+  </script>
+
+</head>
+<body>
+  <h1 id="qunit-header">QUnit example</h1>
+  <h2 id="qunit-banner"></h2>
+  <div id="qunit-testrunner-toolbar"></div>
+  <h2 id="qunit-userAgent"></h2>
+  <ol id="qunit-tests"></ol>
+  <div id="qunit-fixture">
+
+  <div>
+  	<form action="#" method="post" id="inputForm">
+  	  <div>
+        <label for="user_id">ID:</label>
+        <input type="text" name="id" id="user_id" value="123456789">
+      </div>
+  	  <div>
+        <label for="user_name">Name:</label>
+        <input type="text" name="name" id="user_name" value="my name">
+      </div>
+  	  <div>
+        <label for="user_sex">Sex:</label>
+        <fieldset id="user_sex">
+	        <input type="radio" name="sex" id="user_sex_male" value="1" checked><label for="user_sex_male">Male</label>
+	        <input type="radio" name="sex" id="user_sex_female" value="2"><label for="user_sex_female">Female</label>
+        </fieldset>
+      </div>
+  	  <div>
+        <label for="user_lang">Language:</label>
+        <select name="lang" id="user_lang">
+          <option value="jp" selected>Japanese</option><option value="en">English</option>
+        </select>
+      </div>
+  	  <div>
+        <label for="user_receive_news">Receive News Mail:</label>
+        <fieldset id="user_receive_news">
+	        <input type="checkbox" name="news" id="user_reveive_news_sports" value="1" checked><label for="user_receive_news_sports">Sports</label>
+	        <input type="checkbox" name="news" id="user_reveive_news_music" value="2" checked><label for="user_receive_news_music">Music</label>
+	        <input type="checkbox" name="news" id="user_reveive_news_computer" value="3"><label for="user_receive_news_computer">Computer</label>
+        </fieldset>
+      </div>
+      <input type="submit" value="ok" id="submit_ok">
+      <input type="submit" value="ok and continue" id="continue" name="_continue">
+    </form>
+	<div id="confirmForm"></div>
+  </div>
+
+  </div>
+</body>
+</html>
