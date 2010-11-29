@@ -13,9 +13,14 @@ h3. Require
 
 At first, include some required javascript file.
 
-pre. <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.js"></script>
+pre.. <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.js"></script>
 <script type="text/javascript" src="http://dev.iceburg.net/jquery/jqModal/jqModal.js"></script>
 <script type="text/javascript" src="/confirmform.js"></script>
+
+<link charset="utf-8" href="http://dev.iceburg.net/jquery/jqModal/jqModal.css" type="text/css" rel="stylesheet">
+<link charset="utf-8" href="vendor/jqModal/jqmConfirm.css" type="text/css" rel="stylesheet">
+
+p. jqmConfirm.css is created from jqModal example(FUN! Overrides).
 
 h3. Add div to HTML
 
