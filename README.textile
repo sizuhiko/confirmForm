@@ -1,0 +1,92 @@
+h1. confirmForm jQuery Plugin
+
+Copyright(c) 2010 Sizuhiko. Licensed under the MIT license.
+
+h2. Overview
+
+A jQuery plugin that makes confirm with modal-dialog. It created from input-form automatically.
+For making modal dialog, jqModal plugin is required.
+
+h2. Usage
+
+h3. Require
+
+At first, include some required javascript file.
+
+pre. <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.js"></script>
+<script type="text/javascript" src="http://dev.iceburg.net/jquery/jqModal/jqModal.js"></script>
+<script type="text/javascript" src="/confirmform.js"></script>
+
+h3. Add div to HTML
+
+You should add empty-div to HTML for making modal dialog.
+For example, you will add "confirmForm" div.
+
+pre.. <form id="inputForm" action="url" method="post">
+  <div>
+    <label for="user_id">ID:</label>
+    <input type="text" name="id" id="user_id">
+  </div>
+  more fields....
+</form>
+
+<div id="confirmForm" />
+
+h3. Create instance
+
+If you use default setting, it is simple.
+@$("#inputForm").confirmForm("#confirmForm", {});@
+
+You can use customize following:
+* Title (default is "Are you sure?")
+* Buttons
+** defaults are "Yes" and "No"
+* Text format (default value with using jQuery.val())
+* Label (default is previous element using jQuery.prev())
+* Separator when use multi-select with checkbox or selectbox (default is comma)
+
+example:
+<pre><code>
+$("#inputForm").confirmForm("#confirmForm", {
+	'title':'Are you sure following values:',
+	'yes':'Ok',
+	'no':'Cancel',
+	'formatValue':{
+		'sex':function(field) {
+			return {1:"Male", 2:"Female"}[$(field).val()];
+		},
+		'lang':function(field) {
+			return {'jp':"Japanese", 'en':"English"}[$(field).val()];
+		},
+		'news':function(field) {
+			return {1:"Sports", 2:"Music", 3:"Computer"}[$(field).val()];
+		}
+	},
+	'findLabel': function(field) {
+		switch(field.name) {
+		case 'sex':
+			return 'Sex';
+		case 'news':
+			return 'Receive News Mail';
+		default :
+			str = $(field).prev().html();
+			return str.substring(0, str.length-1);
+		}
+	},
+	'separator' : ' / '
+});
+</code></pre>
+
+h3. Show modal dialog
+
+It is simple call.
+@$("#inputForm").confirmShow();@
+
+h3. Check confirmed
+
+You can check whether to "Yes" button was pushed.
+@$("#inputForm").isConfirmed();@
+
+h2. Demos
+
+todo...
