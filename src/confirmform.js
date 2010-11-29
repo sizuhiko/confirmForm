@@ -131,9 +131,9 @@
 			if(prev.name == this.name) {
 				td = td.append(options.separator+__formatValue(this, options));
 			} else {
-				td = $('<td>'+__formatValue(this, options)+'</td>');
+				td = $('<td />').text(__formatValue(this, options));
 				table.append($('<tr />')
-					.append($('<th>'+options.findLabel(this)+'</th>'))
+					.append($('<th />').text(options.findLabel(this)))
 					.append(td)
 				);
 			}
