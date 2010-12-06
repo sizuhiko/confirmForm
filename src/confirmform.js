@@ -129,7 +129,7 @@
 				return;	// not checked
 			}
 			if(prev.name == this.name) {
-				td = td.append(jQuery.fn.text(options.separator+__formatValue(this, options)));
+				td = td.text(td.text()+options.separator+__formatValue(this, options));
 			} else {
 				td = $('<td />').text(__formatValue(this, options));
 				table.append($('<tr />')

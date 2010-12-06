@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <title>HTML Form confirmation jQueryPlugin Demo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link charset="utf-8" href="../vendor/jqModal/jqmConfirm.css" type="text/css" rel="stylesheet"></link>
+    <link charset="utf-8" href="http://dev.iceburg.net/jquery/jqModal/jqModal.css" type="text/css" rel="stylesheet"></link>
+    <link charset="utf-8" href="http://ex-validation.googlecode.com/svn/trunk/css/exvalidation.css" type="text/css" rel="stylesheet"></link>
+    <script charset="utf-8" type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.js"></script>
+    <script charset="utf-8" type="text/javascript" src="http://dev.iceburg.net/jquery/jqModal/jqModal.js"></script>
+    <script charset="utf-8" type="text/javascript" src="http://ex-validation.googlecode.com/svn/trunk/js/exvalidation.js"></script>
+    <script charset="utf-8" type="text/javascript" src="http://ex-validation.googlecode.com/svn/trunk/js/exchecker-en.js"></script>
+
+    <script src="../src/confirmform.js"></script>
+    <style>
+      div {
+        clear:both;
+        margin:5px;
+      }
+      div > label {
+        font-weight: bold;
+        float: left;
+        width: 14em;
+        text-align: right;
+        padding-right: 1em;
+      }
+      fieldset {
+        border: 0;
+        padding: 0;
+        display: inline;
+      }
+      .buttons {
+        margin-top: 1em;
+        margin-left: 20em;
+      }
+      .required {
+        color: red;
+        margin-left:1em;
+      }
+    </style>
+    <script>
+    $(document).ready(function(){
+       $("#inputForm")
+    	  .exValidation({
+    	    rules: {
+    	      user_id: "required",
+    	      user_name: "required",
+    	      user_sex: "radio",
+    	      user_lang: "required"
+    	    },
+			customClearError:function() {
+				if($("#inputForm").isConfirmed()) {
+					return;
+				}
+				$("#inputForm").confirmShow();
+
+			}
+    	  });
+
+        $("#inputForm").confirmForm("#confirmForm", {
+          'title':'Are you sure following values:',
+          'yes':'Ok',
+          'no':'Cancel',
+          'formatValue':{
+            'sex':function(field) {
+              return {1:"Male", 2:"Female"}[$(field).val()];
+            },
+            'lang':function(field) {
+              return {'jp':"Japanese", 'en':"English"}[$(field).val()];
+            },
+            'news':function(field) {
+              return {1:"Sports", 2:"Music", 3:"Computer"}[$(field).val()];
+            }
+          },
+          'findLabel': function(field) {
+            switch(field.name) {
+            case 'sex':
+              return 'Sex';
+            case 'news':
+              return 'Receive News Mail';
+            default :
+              str = $(field).prev().html();
+              return str.substring(0, str.length-1);
+            }
+          },
+          'separator' : ' / '
+        });
+      });
+    </script>
+
+  </head>
+  <body>
+    <h1>HTML Form confirmation jQueryPlugin Demo</h1>
+    <div>
+      <p><span class="required">*</span> is required.</p>
+      <form action="posted.html" method="post" id="inputForm">
+        <div>
+          <label for="user_id">ID:</label>
+          <input type="text" name="id" id="user_id" value=""><span class="required">*</span>
+        </div>
+        <div>
+          <label for="user_name">Name:</label>
+          <input type="text" name="name" id="user_name" value=""><span class="required">*</span>
+        </div>
+        <div>
+          <label for="user_sex">Sex:</label>
+          <fieldset id="user_sex">
+            <input type="radio" name="sex" id="user_sex_male" value="1"><label for="user_sex_male">Male</label>
+            <input type="radio" name="sex" id="user_sex_female" value="2"><label for="user_sex_female">Female</label>
+            <span class="required">*</span>
+          </fieldset>
+        </div>
+        <div>
+          <label for="user_lang">Language:</label>
+          <select name="lang" id="user_lang">
+            <option value="">-- please select --</option><option value="jp">Japanese</option><option value="en">English</option>
+          </select><span class="required">*</span>
+        </div>
+        <div>
+          <label for="user_receive_news">Receive News Mail:</label>
+          <fieldset id="user_receive_news">
+            <input type="checkbox" name="news" id="user_reveive_news_sports" value="1"><label for="user_receive_news_sports">Sports</label>
+            <input type="checkbox" name="news" id="user_reveive_news_music" value="2"><label for="user_receive_news_music">Music</label>
+            <input type="checkbox" name="news" id="user_reveive_news_computer" value="3"><label for="user_receive_news_computer">Computer</label>
+          </fieldset>
+        </div>
+        <div class="buttons">
+          <input type="submit" value="next" id="submit_ok">
+        </div>
+      </form>
+    <div id="confirmForm"></div>
+    </div>
+  </body>
+</html>
