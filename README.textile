@@ -94,4 +94,6 @@ You can check whether to "Yes" button was pushed.
 
 h2. Demos
 
-todo...
+The demo is combination with ex-validation plugin.
+"ex-validation":http://code.google.com/p/ex-validation/
+"demo page":https://github.com/sizuhiko/confirmForm/raw/master/demo/index.html
