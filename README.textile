@@ -95,5 +95,7 @@ You can check whether to "Yes" button was pushed.
 h2. Demos
 
 The demo is combination with ex-validation plugin.
-"ex-validation":http://code.google.com/p/ex-validation/
-"demo page":https://github.com/sizuhiko/confirmForm/raw/master/demo/index.html
+see. "ex-validation":http://code.google.com/p/ex-validation/
+
+The demo URL is
+"http://files.myopera.com/sizuhiko/demo/confirmForm/demo/index.html":http://files.myopera.com/sizuhiko/demo/confirmForm/demo/index.html
